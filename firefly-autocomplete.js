@@ -3,7 +3,7 @@ import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
 import '@aspen-elements/aspen-list-icons';
 import '@firefly-elements/polymerfire/firebase-query';
-import '@firefly-elements/firefly-list-mixin';
+import {FireflyListMixin} from '@firefly-elements/firefly-list-mixin';
 import '@fluidnext-polymer/paper-autocomplete';
 
 /**
@@ -14,7 +14,7 @@ import '@fluidnext-polymer/paper-autocomplete';
  * @polymer
  * @extends {Polymer.Element}
  */
-class AspFireAutocomplete extends AspFireListMixin(PolymerElement) {
+class FireflyAutocomplete extends FireflyListMixin(PolymerElement) {
   static get template() {
     return html`
         <style>
@@ -108,4 +108,4 @@ class AspFireAutocomplete extends AspFireListMixin(PolymerElement) {
  }
 }
 
-window.customElements.define(AspFireAutocomplete.is, AspFireAutocomplete);
+window.customElements.define(FireflyAutocomplete.is, FireflyAutocomplete);
