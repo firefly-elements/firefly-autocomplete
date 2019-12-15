@@ -1,10 +1,10 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-flex-layout/iron-flex-layout.js';
-import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
-import '@aspen-elements/aspen-list-icons';
-import '@firefly-elements/polymerfire/firebase-query';
-import '@firefly-elements/firefly-list-mixin';
-import '@fluidnext-polymer/paper-autocomplete';
+import { PolymerElement, html } from "@polymer/polymer/polymer-element.js";
+import "@polymer/iron-flex-layout/iron-flex-layout.js";
+import { afterNextRender } from "@polymer/polymer/lib/utils/render-status.js";
+import "@aspen-elements/aspen-list-icons";
+import "@firefly-elements/polymerfire/firestore-query";
+import { FireflyListMixin } from "@firefly-elements/firefly-list-mixin";
+import "@cwmr/paper-autocomplete/paper-autocomplete";
 
 /**
  * `firefly-autocomplete` Description
@@ -14,52 +14,88 @@ import '@fluidnext-polymer/paper-autocomplete';
  * @polymer
  * @extends {Polymer.Element}
  */
-class AspFireAutocomplete extends AspFireListMixin(PolymerElement) {
+class FireflyAutocomplete extends FireflyListMixin(PolymerElement) {
   static get template() {
     return html`
-        <style>
-            :host {
-                display: block
-            }
-            #container{
-                @apply --layout-horizontal;
-            }
-            aspen-button{
-                margin-top: 25px;
-            }
-        </style>
+      <style>
+        :host {
+          display: block;
+        }
+        #container {
+          @apply --layout-horizontal;
+        }
+        aspen-button {
+          margin-top: 25px;
+        }
+      </style>
 
-    <firebase-query app-name="[[appName]]" path="[[path]]" data="{{model}}" start-at="[[searchTerm]]" order-by-child="[[orderByChild]]" equal-to="[[equalTo]]" on-data-changed="__updateValueMap"></firebase-query>
+      <template is="dom-if" if="[[subcollection]]">
+        <fs-query
+          subcollection
+          app-name="[[appName]]"
+          path="[[path]]"
+          data="{{model}}"
+          start-at="[[searchTerm]]"
+          order-by="[[orderByChild]]"
+          equal-to="[[equalTo]]"
+          on-data-changed="__updateValueMap"
+        ></fs-query>
+      </template>
+      <template is="dom-if" if="[[!subcollection]]">
+        <fs-query
+          app-name="[[appName]]"
+          path="[[path]]"
+          data="{{model}}"
+          start-at="[[searchTerm]]"
+          order-by="[[orderByChild]]"
+          equal-to="[[equalTo]]"
+          on-data-changed="__updateValueMap"
+        ></fs-query>
+      </template>
 
-    <div id="container">
-        <paper-autocomplete label="[[label]]" always-float-label="" value="{{selectedId}}" source="[[model]]" text-property="name" text="{{searchTerm}}" value-property="\$key" on-autocomplete-selected="__valueSelected"></paper-autocomplete>
+      <div id="container">
+        <paper-autocomplete
+          label="[[label]]"
+          always-float-label=""
+          value="{{selectedId}}"
+          source="[[model]]"
+          text-property="name"
+          text="{{searchTerm}}"
+          value-property="$key"
+          on-autocomplete-selected="__valueSelected"
+        ></paper-autocomplete>
 
         <template is="dom-if" if="{{editable}}">
-            <aspen-button icon="list:add-circle" on-tap="_openAddDialog"></aspen-button>
+          <aspen-button
+            icon="list:add-circle"
+            on-tap="_openAddDialog"
+          ></aspen-button>
         </template>
-    </div>
+      </div>
 
-    <slot select=".detail-dialog"></slot>
-`;
+      <slot select=".detail-dialog"></slot>
+    `;
   }
 
   /**
    * String providing the tag name to register the element under.
    */
   static get is() {
-      return 'firefly-autocomplete';
+    return "firefly-autocomplete";
   }
 
-  static get properties(){
-      return {
-
-          searchTerm:{
-              type: String,
-              value: ''
-          }
+  static get properties() {
+    return {
+      searchTerm: {
+        type: String,
+        value: ""
+      },
+      subcollection: {
+        type: Boolean,
+        value: false
       }
+    };
   }
-
 
   /**
    * Instance of the element is created/upgraded. Use: initializing state,
@@ -67,45 +103,41 @@ class AspFireAutocomplete extends AspFireListMixin(PolymerElement) {
    * @constructor
    */
   constructor() {
-      super();
+    super();
   }
 
   /**
-   * Use for one-time configuration of your component after local DOM is initialized. 
+   * Use for one-time configuration of your component after local DOM is initialized.
    */
   ready() {
-      super.ready();
+    super.ready();
 
-      afterNextRender(this, function() {
-          
-      });
+    afterNextRender(this, function() {});
   }
 
-  __valueSelected(e){
-      let selected = e.detail.option;
-      let selectedObj = this.valueMap.get(selected.$key);
-      console.log(selectedObj);
-      this.set('selectedItem', selectedObj);
-      this.set('selected', selectedObj.$key);
+  __valueSelected(e) {
+    let selected = e.detail.option;
+    let selectedObj = this.valueMap.get(selected.$key);
+    console.log(selectedObj);
+    this.set("selectedItem", selectedObj);
+    this.set("selected", selectedObj.$key);
   }
 
   /**
-   * This method is responsible for updating a map of the investors each time the 
+   * This method is responsible for updating a map of the investors each time the
    * new data is returned from the investorQuery.
    * @param {Event} e the event object.
    */
-  __updateValueMap(e){
-     let values = e.detail.value;
-     if(values && values.length > 0){
-         let valueMap = new Map();
-         for(let value of values){
-             valueMap.set(value.$key, value);
-         }
-         this.set('valueMap', valueMap);
-     }
-     
-
- }
+  __updateValueMap(e) {
+    let values = e.detail.value;
+    if (values && values.length > 0) {
+      let valueMap = new Map();
+      for (let value of values) {
+        valueMap.set(value.$key, value);
+      }
+      this.set("valueMap", valueMap);
+    }
+  }
 }
 
-window.customElements.define(AspFireAutocomplete.is, AspFireAutocomplete);
+window.customElements.define(FireflyAutocomplete.is, FireflyAutocomplete);

@@ -13,7 +13,7 @@
     "@aspen-elements/aspen-list-icons": "^0.5.0",
     "@firefly-elements/firefly-list-mixin": "^0.5.0",
     "@firefly-elements/polymerfire": "^0.5.0",
-    "@fluidnext-polymer/paper-autocomplete": "^3.1.1",
+    "@cwmr/paper-autocomplete": "^4.0.0",
     "@polymer/iron-flex-layout": "^3.0.0",
     "@polymer/polymer": "^3.0.0"
   },
