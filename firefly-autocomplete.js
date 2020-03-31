@@ -36,8 +36,7 @@ class FireflyAutocomplete extends FireflyListMixin(PolymerElement) {
           path="[[path]]"
           data="{{model}}"
           start-at="[[searchTerm]]"
-          order-by="[[orderByChild]]"
-          equal-to="[[equalTo]]"
+          order-by="[[orderBy]]"
           on-data-changed="__updateValueMap"
         ></fs-query>
       </template>
@@ -47,8 +46,7 @@ class FireflyAutocomplete extends FireflyListMixin(PolymerElement) {
           path="[[path]]"
           data="{{model}}"
           start-at="[[searchTerm]]"
-          order-by="[[orderByChild]]"
-          equal-to="[[equalTo]]"
+          order-by="[[orderBy]]"
           on-data-changed="__updateValueMap"
         ></fs-query>
       </template>
